@@ -1,88 +1,12 @@
-// import React, { useState } from 'react';
-// import { Container, TextField, Button, Typography, Paper } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';  // New import for navigation
 
-// function Loginpage() {
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-//     const navigate = useNavigate();  // Use useNavigate instead of useHistory
-
-//     const handleSubmit = (event) => {
-//         event.preventDefault();
-//         console.log('Email:', email, 'Password:', password);
-//         // Implement authentication logic here
-//     };
-
-//     const handleSignup = () => {
-//         navigate('/signup');  // Use navigate instead of history.push
-//     };
-
-//     return (
-//         <div>
-//         <Container component="main" maxWidth="xs">
-//             <Paper elevation={6} style={{ marginTop: 150, padding: 30 }}>
-//                 <Typography component="h1" variant="h5" style={{ marginBottom: 20 }}>
-//                     Bookstore Login
-//                 </Typography>
-//                 <form onSubmit={handleSubmit}>
-//                     <TextField
-//                         variant="filled"
-//                         margin="normal"
-//                         required
-//                         fullWidth
-//                         id="email"
-//                         label="Email Address"
-//                         name="email"
-//                         autoFocus
-//                         value={email}
-//                         onChange={e => setEmail(e.target.value)}
-//                     />
-//                     <TextField
-//                         variant="filled"
-//                         margin="normal"
-//                         required
-//                         fullWidth
-//                         name="password"
-//                         label="Password"
-//                         type="password"
-//                         id="password"
-//                         value={password}
-//                         onChange={e => setPassword(e.target.value)}
-//                     />
-//                     <Button
-//                         type="submit"
-//                         fullWidth
-//                         variant="contained"
-//                         color="primary"
-//                         style={{ marginTop: 20 }}
-//                     >
-//                         Sign In
-//                     </Button>
-//                     <Button
-//                         fullWidth
-//                         variant="outlined"
-//                         color="primary"
-//                         style={{ marginTop: 10 }}
-//                         onClick={handleSignup}
-//                     >
-//                         Sign Up
-//                     </Button>
-//                 </form>
-//             </Paper>
-//         </Container>
-//         </div>
-//     );
-// }
-
-// export default Loginpage;
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';  // New import for navigation
+import { useNavigate } from 'react-router-dom';  
 
 function Loginpage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();  // Use useNavigate instead of useHistory
+    const navigate = useNavigate();  
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -91,7 +15,7 @@ function Loginpage() {
     };
 
     const handleSignup = () => {
-        navigate('/signup');  // Use navigate instead of history.push
+        navigate('/signup');  
     };
 
     return (
