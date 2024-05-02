@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/login/loginpage'; // Make sure this is the correct path
-import SignupPage from './pages/signup/Signuppage'; // Make sure this is the correct path
+import LoginPage from './pages/login/loginpage'; 
+import SignupPage from './pages/signup/Signuppage'; 
 
 function App() {
   return (
