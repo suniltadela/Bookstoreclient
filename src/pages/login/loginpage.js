@@ -1,21 +1,57 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios'; // Import Axios
 
 function Loginpage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();  
+    const [logindetails, setlogindetails] = useState({ email: '', password: '' });
+    const [showerorstatus, setshowerorstatus] = useState(false);
+    const [errormsg, seterrormsg] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log('Email:', email, 'Password:', password);
-        // Implement authentication logic here
-    };
+    useEffect(() => {
+        const accessToken = Cookies.get('access_token');
+        if (accessToken) {
+            navigate('/home');
+        }
+    }, [navigate]);
 
     const handleSignup = () => {
-        navigate('/signup');  
+        navigate('/signup');
+    };
+
+    const onSubmitSuccess = (accesstoken) => {
+        navigate('/home');
+        Cookies.set('access_token', accesstoken, { expires: 30 });
+    };
+
+    const onsubmitfailure = () => {
+        setshowerorstatus(true);
+        seterrormsg('* Username and password did not match');
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:3000/login', logindetails); // Use Axios post
+            const data = response.data;
+            console.log(response.status,'respoooo')
+            if (response.status === 200) {
+                onSubmitSuccess(data.accesstoken);
+            }
+        } catch (error) {
+            console.error('Login Error:', error);
+            onsubmitfailure();
+        }
+    };
+
+    const onChangeUserInput = (e) => {
+        setlogindetails({ ...logindetails, email: e.target.value });
+    };
+
+    const onChangePassInput = (e) => {
+        setlogindetails({ ...logindetails, password: e.target.value });
     };
 
     return (
@@ -38,10 +74,9 @@ function Loginpage() {
                             id="email"
                             label="Email Address"
                             name="email"
-                            style={{ marginTop: 20, backgroundColor: 'white ', color: 'green' }}
                             autoFocus
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            value={logindetails.email}
+                            onChange={onChangeUserInput}
                         />
                         <TextField
                             variant="filled"
@@ -52,16 +87,16 @@ function Loginpage() {
                             label="Password"
                             type="password"
                             id="password"
-                            style={{ marginTop: 20, backgroundColor: 'white ', color: 'green' }}
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
+                            value={logindetails.password}
+                            onChange={onChangePassInput}
                         />
+                        {showerorstatus && <Typography color="error">{errormsg}</Typography>}
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
-                            style={{ marginTop: 20, backgroundColor: '#278A24  ', color: 'white' }}
+                            style={{ marginTop: 20, backgroundColor: '#278A24', color: 'white' }}
                         >
                             Sign In
                         </Button>
@@ -69,7 +104,7 @@ function Loginpage() {
                             fullWidth
                             variant="outlined"
                             color="primary"
-                            style={{ marginTop: 10 , backgroundColor: '#278A24  ', color: 'white'}}
+                            style={{ marginTop: 10, backgroundColor: '#278A24', color: 'white' }}
                             onClick={handleSignup}
                         >
                             Register / Sign Up

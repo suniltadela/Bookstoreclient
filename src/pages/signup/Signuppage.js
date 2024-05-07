@@ -33,7 +33,7 @@ function SignupPage() {
     };
 
     const handleBack = () => {
-        navigate('/');
+        navigate('/login');
     };
 
     return (
@@ -45,7 +45,7 @@ function SignupPage() {
             <Container component="main" maxWidth="xs" style={{ paddingTop: '50px' }}>
                 <Paper elevation={6} style={{ padding: '30px', backgroundColor: '#b2dfdb', position: 'relative', zIndex: '1' }}>
                     <Typography component="h1" variant="h5" style={{ marginBottom: '20px', textAlign: 'center' }}>
-                        Signup
+                        Signup/Register
                     </Typography>
                     <form onSubmit={handleSubmit}>
                         <TextField
