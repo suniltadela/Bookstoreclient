@@ -1,0 +1,67 @@
+.book-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+
+
+.book-container {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(120px, 1fr)); /* Adjusted width to create square items */
+    gap: 20px;
+}
+.book-container {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(120px, 1fr)); /* Adjusted width to create square items */
+    gap: 20px;
+}
+
+.book-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.book-itemimg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%; /* Ensure the image does not exceed the container height */
+}
+
+
+
+.book-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.book-item img {
+    width: 100%;
+    height: auto;
+}
+
+.book-details {
+    padding: 10px;
+}
+
+.book-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.book-description {
+    font-size: 14px;
+    color: #666;
+}
+
+.book-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
