@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login/loginpage'; // Correct the import path
-import SignupPage from './pages/signup/Signuppage'; 
+import SignupPage from './pages/signup/Signuppage';
 import BookList from './components/BookList';
 import Navbar from './components/Navbar/Navbar';
 import Contact from './pages/contact/Contact';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
     return (
@@ -22,7 +23,7 @@ function App() {
                         <Route path="/" element={<Navigate to="/login" />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/signup" element={<SignupPage />} />
-                        <Route path="/home" element={<BookList />} />
+                        <Route path="/home" element={<PrivateRoute element={<BookList />} />} />
                         <Route path="/contact" element={<Contact />} />
                     </Routes>
                 </div>
