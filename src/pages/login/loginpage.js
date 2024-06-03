@@ -15,6 +15,9 @@ function Loginpage() {
         if (accessToken) {
             navigate('/home');
         }
+        else{
+            navigate('/login')
+        }
     }, [navigate]);
 
     const handleSignup = () => {
@@ -28,12 +31,13 @@ function Loginpage() {
 
     const onsubmitfailure = () => {
         setshowerorstatus(true);
-        seterrormsg('* Username and password did not match');
+        seterrormsg('* Username and password did not match or errror failure');
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            console.log('Login details:', logindetails);
             const response = await axios.post('http://localhost:3000/login', logindetails); // Use Axios post
             const data = response.data;
             console.log(response.status,'respoooo')

@@ -11,6 +11,7 @@ function SignupPage() {
         age: '',
         gender: ''
     });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -28,7 +29,11 @@ function SignupPage() {
             setUser({ name: '', email: '', password: '', gender: '', age: '' });
             navigate('/');
         } catch (error) {
-            console.error('Error during signup:', error.response ? error.response.data : error.message);
+            if (error.response && error.response.data && error.response.data.error) {
+                setError(error.response.data.error);
+            } else {
+                setError('An error occurred during signup. Please try again.');
+            }
         }
     };
 
@@ -117,6 +122,7 @@ function SignupPage() {
                                 <MenuItem value="Other">Other</MenuItem>
                             </Select>
                         </FormControl>
+                        {error && <Typography color="error" variant="body2" style={{ marginBottom: '10px', textAlign: 'center' }}>{error}</Typography>}
                         <Button
                             type="submit"
                             fullWidth
