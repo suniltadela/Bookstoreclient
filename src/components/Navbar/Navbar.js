@@ -12,11 +12,6 @@ const Navbar = () => {
         navigate('/login');
     };
 
-    const handleHomeClick = () => {
-        if (!accessToken) {
-            navigate('/login');
-        }
-    };
 
     return (
         <AppBar position="fixed" style={{ backgroundColor: '#278A24' }}>
