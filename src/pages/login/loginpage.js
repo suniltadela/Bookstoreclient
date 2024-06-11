@@ -14,9 +14,8 @@ function Loginpage() {
         const accessToken = Cookies.get('access_token');
         if (accessToken) {
             navigate('/home');
-        }
-        else{
-            navigate('/login')
+        } else {
+            navigate('/login');
         }
     }, [navigate]);
 
@@ -31,18 +30,22 @@ function Loginpage() {
 
     const onsubmitfailure = () => {
         setshowerorstatus(true);
-        seterrormsg('* Username and password did not match or errror failure');
+        seterrormsg('* Username and password did not match or error failure');
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             console.log('Login details:', logindetails);
-            const response = await axios.post('https://bookstoreserver-pbuhpebqm-suniltadelas-projects.vercel.app/login', logindetails); // Use Axios post
+            const response = await axios.post(
+                'https://bookstoreserver-pbuhpebqm-suniltadelas-projects.vercel.app/login', 
+                logindetails,
+                { withCredentials: true } // Ensure credentials are sent with the request
+            );
             const data = response.data;
-            console.log(response.status,'respoooo')
+            console.log(response.status, 'respoooo');
             if (response.status === 200) {
-                onSubmitSuccess(data.accesstoken);
+                onSubmitSuccess(data.accessToken);
             }
         } catch (error) {
             console.error('Login Error:', error);
