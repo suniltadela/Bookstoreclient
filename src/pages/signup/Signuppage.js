@@ -24,7 +24,7 @@ function SignupPage() {
     const handleSubmit = async(event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3000/signup', user);
+            const response = await axios.post('https://bookstoreserver-pbuhpebqm-suniltadelas-projects.vercel.app/signup', user);
             console.log(response.data);
             setUser({ name: '', email: '', password: '', gender: '', age: '' });
             navigate('/');
