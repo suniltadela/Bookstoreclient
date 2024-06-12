@@ -8,6 +8,7 @@ function Loginpage() {
     const [logindetails, setlogindetails] = useState({ email: '', password: '' });
     const [showerorstatus, setshowerorstatus] = useState(false);
     const [errormsg, seterrormsg] = useState('');
+    const [userData, setUserData] = useState(null); // Added state for user data
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,14 +25,30 @@ function Loginpage() {
     };
 
     const onSubmitSuccess = (accesstoken) => {
+        // Navigate to home and set user data
         navigate('/home');
+        setUserData({ name: logindetails.email }); // Assuming email as name for now
         Cookies.set('access_token', accesstoken, { expires: 30 });
     };
 
-    const onsubmitfailure = () => {
-        setshowerorstatus(true);
-        seterrormsg('* Username and password did not match or error failure');
-    };
+    const onsubmitfailure = (error) => {
+    setshowerorstatus(true);
+    if (error.response) {
+        const responseData = error.response.data;
+        if (responseData.error === 'Email already exists') {
+            seterrormsg('* Email already exists');
+        } else if (responseData.message === 'Invalid email or password') {
+            seterrormsg('* Invalid email or password');
+        } else if (responseData.message === 'Email not verified. Please check your email.') {
+            seterrormsg('* Email not verified. Please check your email.');
+        } else {
+            seterrormsg('* Login failed. Please try again later.');
+        }
+    } else {
+        seterrormsg('* Login failed. Please try again later.');
+    }
+};
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -43,13 +60,13 @@ function Loginpage() {
                 { withCredentials: true } // Ensure credentials are sent with the request
             );
             const data = response.data;
-            console.log(response.status, 'respoooo');
+            console.log(response.status, 'response success');
             if (response.status === 200) {
                 onSubmitSuccess(data.accessToken);
             }
         } catch (error) {
             console.error('Login Error:', error);
-            onsubmitfailure();
+            onsubmitfailure(error);
         }
     };
 
@@ -98,6 +115,9 @@ function Loginpage() {
                             onChange={onChangePassInput}
                         />
                         {showerorstatus && <Typography color="error">{errormsg}</Typography>}
+                        {userData && (
+                            <Typography>Welcome, {userData.name}!</Typography>
+                        )}
                         <Button
                             type="submit"
                             fullWidth
