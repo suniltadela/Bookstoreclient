@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Container, TextField, Button, Typography, Paper, Link } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import axios from 'axios'; // Import Axios
+import axios from 'axios';
+
 
 function Loginpage() {
     const [logindetails, setlogindetails] = useState({ email: '', password: '' });
@@ -32,40 +33,38 @@ function Loginpage() {
     };
 
     const onsubmitfailure = (error) => {
-    setshowerorstatus(true);
-    if (error.response) {
-        const responseData = error.response.data;
-        if (responseData.error === 'Email already exists') {
-            seterrormsg('* Email already exists');
-        } else if (responseData.message === 'Invalid email or password') {
-            seterrormsg('* Invalid email or password');
-        } else if (responseData.message === 'Email not verified. Please check your email.') {
-            seterrormsg('* Email not verified. Please check your email.');
+        setshowerorstatus(true);
+        if (error.response) {
+            const responseData = error.response.data;
+            if (responseData.error === 'Email already exists') {
+                seterrormsg('* Email already exists');
+            } else if (responseData.message === 'Invalid email or password') {
+                seterrormsg('* Invalid email or password');
+            } else if (responseData.message === 'Email not verified. Please check your email.') {
+                seterrormsg('* Email not verified. Please check your email.');
+            } else {
+                seterrormsg('* Login failed. Please try again later.');
+            }
         } else {
             seterrormsg('* Login failed. Please try again later.');
         }
-    } else {
-        seterrormsg('* Login failed. Please try again later.');
-    }
-};
-
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            console.log('Login details:', logindetails);
-            const response = await axios.post(
-                'https://bookstoreserver-five.vercel.app/login', 
+            const response = await axios.post(`
+                ${process.env.REACT_APP_BASE_URL}/login`,
                 logindetails,
                 { withCredentials: true } // Ensure credentials are sent with the request
             );
             const data = response.data;
-            console.log(response.status, 'response success');
+            // console.log(response.status, 'response success');
             if (response.status === 200) {
                 onSubmitSuccess(data.accessToken);
             }
         } catch (error) {
-            console.error('Login Error:', error);
+            // console.error('Login Error:', error);
             onsubmitfailure(error);
         }
     };
@@ -136,6 +135,11 @@ function Loginpage() {
                         >
                             Register / Sign Up
                         </Button>
+                        <Typography variant="body2" style={{ marginTop: 10 }}>
+                            <Link component={RouterLink} to="/forgot-password" style={{ textDecoration: 'none', color: '#278A24' }}>
+                                Forgot password?
+                            </Link>
+                        </Typography>
                     </form>
                 </Paper>
             </Container>
