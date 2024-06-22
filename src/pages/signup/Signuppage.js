@@ -9,25 +9,35 @@ function SignupPage() {
         email: '',
         password: '',
         age: '',
-        gender: ''
+        gender: '',
+        phone: '',
+        countryCode: '+91' // Default country code
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
         setUser({
             ...user,
-            [e.target.name]: e.target.value
+            [name]: value
         });
     };
 
-    const handleSubmit = async(event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('https://bookstoreserver-five.vercel.app/signup', user);
-            console.log(response.data);
-            setUser({ name: '', email: '', password: '', gender: '', age: '' });
-            navigate('/');
+            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/signup`, user);
+            setUser({
+                name: '',
+                email: '',
+                password: '',
+                age: '',
+                gender: '',
+                phone: '',
+                countryCode: '+91' // Reset country code after signup
+            });
+            navigate('/login');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.error) {
                 setError(error.response.data.error);
@@ -120,6 +130,34 @@ function SignupPage() {
                                 <MenuItem value="Male">Male</MenuItem>
                                 <MenuItem value="Female">Female</MenuItem>
                                 <MenuItem value="Other">Other</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            variant="filled"
+                            margin="normal"
+                            fullWidth
+                            id="phone"
+                            label="Phone Number"
+                            name="phone"
+                            type="tel"
+                            value={user.phone}
+                            onChange={handleChange}
+                            style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+                        />
+                        <FormControl fullWidth style={{ marginTop: 20 }}>
+                            <InputLabel>Country Code</InputLabel>
+                            <Select
+                                label="Country Code"
+                                id="countryCode"
+                                name="countryCode"
+                                value={user.countryCode}
+                                onChange={handleChange}
+                                style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+                            >
+                                <MenuItem value="+91">India (+91)</MenuItem>
+                                <MenuItem value="+1">United States (+1)</MenuItem>
+                                <MenuItem value="+44">United Kingdom (+44)</MenuItem>
+                                {/* Add more countries as needed */}
                             </Select>
                         </FormControl>
                         {error && <Typography color="error" variant="body2" style={{ marginBottom: '10px', textAlign: 'center' }}>{error}</Typography>}

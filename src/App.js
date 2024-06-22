@@ -6,6 +6,8 @@ import BookList from './components/BookList';
 import Navbar from './components/Navbar/Navbar';
 import Contact from './pages/contact/Contact';
 import PrivateRoute from './components/PrivateRoute';
+import ForgotPasswordPage from './components/Forgotpassword/Forgotpassword';
+import ResetPasswordPage from './components/Resetpassword/Resetpassword';
 
 function App() {
     return (
@@ -25,6 +27,8 @@ function App() {
                         <Route path="/signup" element={<SignupPage />} />
                         <Route path="/home" element={<PrivateRoute element={<BookList />} />} />
                         <Route path="/contact" element={<Contact />} />
+                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
                     </Routes>
                 </div>
             </Router>
