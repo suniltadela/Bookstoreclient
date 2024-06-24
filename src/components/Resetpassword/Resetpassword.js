@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Paper, Snackbar } from '@mui/material';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { resetPassword, closeSnackbar } from '../../Redux/Reducer/Resetpasswordslice/Resetpasswordslice';
 
 function ResetPasswordPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const { identifier,otp } = location.state;
+    const { identifier, otp } = location.state || {}; // default to empty object if state is undefined
+    const { loading, snackbar } = useSelector((state) => state.resetPassword);
+
+    useEffect(() => {
+        if (snackbar.severity === 'success') {
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000); // Redirect to login after 2 seconds
+        }
+    }, [snackbar, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,29 +30,17 @@ function ResetPasswordPage() {
         }
     };
 
-    const handleSubmit = async (e) => {
-        // console.log(location.state,'loc')
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            setSnackbar({ open: true, message: 'Passwords do not match', severity: 'error' });
+            dispatch(closeSnackbar());
             return;
         }
-        try {
-            const response = await axios.post(`
-                ${process.env.REACT_APP_BASE_URL}/update-password`, {
-                identifier,
-                otp,
-                newPassword: password
-            });
-            setSnackbar({ open: true, message: response.data.message, severity: 'success' });
-            navigate('/login');
-        } catch (error) {
-            setSnackbar({ open: true, message: 'Failed to reset password. Please try again.', severity: 'error' });
-        }
+        dispatch(resetPassword({ identifier, otp, newPassword: password }));
     };
 
     const handleCloseSnackbar = () => {
-        setSnackbar({ ...snackbar, open: false });
+        dispatch(closeSnackbar());
     };
 
     return (
@@ -83,8 +81,9 @@ function ResetPasswordPage() {
                         variant="contained"
                         color="primary"
                         style={{ marginTop: 20, backgroundColor: '#278A24', color: 'white' }}
+                        disabled={loading}
                     >
-                        Reset Password
+                        {loading ? 'Resetting...' : 'Reset Password'}
                     </Button>
                 </form>
             </Paper>

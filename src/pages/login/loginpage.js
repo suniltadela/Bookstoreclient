@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Paper, Link } from '@mui/material';
+import { Container, TextField, Button, Typography, Paper, Snackbar, Link } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-
-function Loginpage() {
+function LoginPage() {
     const [logindetails, setlogindetails] = useState({ email: '', password: '' });
+    const [loading, setLoading] = useState(false);
     const [showerorstatus, setshowerorstatus] = useState(false);
     const [errormsg, seterrormsg] = useState('');
-    const [userData, setUserData] = useState(null); // Added state for user data
+    const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,13 +26,17 @@ function Loginpage() {
     };
 
     const onSubmitSuccess = (accesstoken) => {
-        // Navigate to home and set user data
-        navigate('/home');
-        setUserData({ name: logindetails.email }); // Assuming email as name for now
+        setUserData({ name: logindetails.email });
         Cookies.set('access_token', accesstoken, { expires: 30 });
+        setLoading(false);
+        seterrormsg('Login successful!');
+        setTimeout(() => {
+            navigate('/home');
+        }, 1500);
     };
 
     const onsubmitfailure = (error) => {
+        setLoading(false);
         setshowerorstatus(true);
         if (error.response) {
             const responseData = error.response.data;
@@ -52,19 +56,18 @@ function Loginpage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
         try {
-            const response = await axios.post(`
-                ${process.env.REACT_APP_BASE_URL}/login`,
+            const response = await axios.post(
+                `${process.env.REACT_APP_BASE_URL}/login`,
                 logindetails,
-                { withCredentials: true } // Ensure credentials are sent with the request
+                { withCredentials: true }
             );
             const data = response.data;
-            // console.log(response.status, 'response success');
             if (response.status === 200) {
                 onSubmitSuccess(data.accessToken);
             }
         } catch (error) {
-            // console.error('Login Error:', error);
             onsubmitfailure(error);
         }
     };
@@ -77,12 +80,12 @@ function Loginpage() {
         setlogindetails({ ...logindetails, password: e.target.value });
     };
 
+    const handleCloseSnackbar = () => {
+        setshowerorstatus(false);
+    };
+
     return (
         <div style={{ position: 'relative' }}>
-            <video autoPlay loop muted style={{ position: 'fixed', width: '100%', height: '100%', objectFit: 'cover', zIndex: '-1' }}>
-                <source src="/Untitled design.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
             <Container component="main" maxWidth="xs" style={{ paddingTop: 150 }}>
                 <Paper elevation={6} style={{ padding: 30, backgroundColor: '#b2dfdb' }}>
                     <Typography component="h1" variant="h5" style={{ marginBottom: 20 }}>
@@ -100,6 +103,7 @@ function Loginpage() {
                             autoFocus
                             value={logindetails.email}
                             onChange={onChangeUserInput}
+                            disabled={loading}
                         />
                         <TextField
                             variant="filled"
@@ -112,6 +116,7 @@ function Loginpage() {
                             id="password"
                             value={logindetails.password}
                             onChange={onChangePassInput}
+                            disabled={loading}
                         />
                         {showerorstatus && <Typography color="error">{errormsg}</Typography>}
                         {userData && (
@@ -123,8 +128,9 @@ function Loginpage() {
                             variant="contained"
                             color="primary"
                             style={{ marginTop: 20, backgroundColor: '#278A24', color: 'white' }}
+                            disabled={loading}
                         >
-                            Sign In
+                            {loading ? 'Signing In...' : 'Sign In'}
                         </Button>
                         <Button
                             fullWidth
@@ -132,6 +138,7 @@ function Loginpage() {
                             color="primary"
                             style={{ marginTop: 10, backgroundColor: '#278A24', color: 'white' }}
                             onClick={handleSignup}
+                            disabled={loading}
                         >
                             Register / Sign Up
                         </Button>
@@ -143,8 +150,18 @@ function Loginpage() {
                     </form>
                 </Paper>
             </Container>
+            <Snackbar
+                open={showerorstatus}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                message={errormsg}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                ContentProps={{
+                    style: { backgroundColor: errormsg.includes('successful') ? 'green' : 'red' },
+                }}
+            />
         </div>
     );
 }
 
-export default Loginpage;
+export default LoginPage;
