@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Paper, CircularProgress, Snackbar, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import axios from 'axios';
+import { Container, TextField, Button, Typography, Paper, CircularProgress, Snackbar } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { sendOtp, closeSnackbar } from '../../Redux/Reducer/Forgetpasswordslice/Forgetpasswordslice'; // Correct import
 import { useNavigate } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 function ForgotPasswordPage() {
+    const dispatch = useDispatch();
+    const { loading, otpSent, snackbar } = useSelector((state) => state.forgotPassword);
     const [identifier, setIdentifier] = useState('');
-    const [countryCode, setCountryCode] = useState('+91'); // Default country code
+    const [countryCode, setCountryCode] = useState('+91');
     const [otp, setOtp] = useState('');
-    const [otpSent, setOtpSent] = useState(false);
-    const [otpVerified, setOtpVerified] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -21,50 +20,24 @@ function ForgotPasswordPage() {
         } else if (name === 'countryCode') {
             setCountryCode(value);
         } else if (name === 'otp') {
-            // Validate and parse OTP as a number (assuming it's numeric)
-            const parsedOTP = parseInt(value, 10);
-            if (!isNaN(parsedOTP)) { // Check if it's a valid number
-                setOtp(parsedOTP);
-            }
+            setOtp(value);
         }
     };
 
-    const handleSendOtp = async (e) => {
+    const handleSendOtp = (e) => {
         e.preventDefault();
-        try {
-            setLoading(true);
-            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/forgot-password`, {
-                identifier: identifier.includes('@') ? identifier : `${countryCode}${identifier}` // Include country code if it's a phone number
-            });
-            setOtpSent(true);
-            setLoading(false);
-            setSnackbar({ open: true, message: 'OTP sent successfully', severity: 'success' });
-        } catch (error) {
-            setLoading(false);
-            setSnackbar({ open: true, message: 'Failed to send OTP. Please try again.', severity: 'error' });
-        }
+        dispatch(sendOtp({ identifier }));
     };
 
-    const handleVerifyOtp = async (e) => {
+    const handleVerifyOtp = (e) => {
         e.preventDefault();
-        try {
-            setLoading(true);
-            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/verify-otp`, {
-                identifier: identifier.includes('@') ? identifier : `${countryCode}${identifier}`, // Include country code if it's a phone number
-                otp
-            });
-            setLoading(false);
-            setOtpVerified(true);
-            setSnackbar({ open: true, message: 'OTP verified successfully', severity: 'success' });
+        if (otpSent) {
             navigate('/reset-password', { state: { identifier, otp } });
-        } catch (error) {
-            setLoading(false);
-            setSnackbar({ open: true, message: error.response ? error.response.data.message : 'Failed to verify OTP. Please try again.', severity: 'error' });
         }
     };
 
     const handleCloseSnackbar = () => {
-        setSnackbar({ ...snackbar, open: false });
+        dispatch(closeSnackbar());
     };
 
     return (
@@ -80,29 +53,26 @@ function ForgotPasswordPage() {
                         required
                         fullWidth
                         id="identifier"
-                        label="Email"
+                        label="Email "
                         name="identifier"
                         autoFocus
                         value={identifier}
                         onChange={handleChange}
                         disabled={otpSent}
                     />
-                    {/* {!identifier.includes('@') && !otpSent && (
-                        <FormControl fullWidth style={{ marginTop: 20 }}>
-                            <InputLabel>Country Code</InputLabel>
-                            <Select
-                                label="Country Code"
-                                id="countryCode"
-                                name="countryCode"
-                                value={countryCode}
-                                onChange={handleChange}
-                                style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
-                            >
-                                <MenuItem value="+91">India (+91)</MenuItem>
-                                <MenuItem value="+1">United States (+1)</MenuItem>
-                                <MenuItem value="+44">United Kingdom (+44)</MenuItem>
-                            </Select>
-                        </FormControl>
+                    {/* {!identifier.includes('@') && (
+                        <TextField
+                            variant="filled"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="countryCode"
+                            label="Country Code"
+                            name="countryCode"
+                            value={countryCode}
+                            onChange={handleChange}
+                            disabled={otpSent}
+                        />
                     )} */}
                     {otpSent && (
                         <TextField
@@ -118,9 +88,9 @@ function ForgotPasswordPage() {
                             InputProps={{
                                 endAdornment: loading ? (
                                     <CircularProgress size={20} />
-                                ) : otpVerified ? (
+                                ) : (
                                     <CheckCircleIcon color="success" />
-                                ) : null,
+                                ),
                             }}
                         />
                     )}
@@ -132,7 +102,7 @@ function ForgotPasswordPage() {
                         style={{ marginTop: 20, backgroundColor: '#278A24', color: 'white' }}
                         disabled={loading}
                     >
-                        {otpSent ? 'Verify OTP' : 'Send OTP'}
+                        {loading ? 'Sending...' : otpSent ? 'Verify OTP' : 'Send OTP'}
                     </Button>
                 </form>
             </Paper>
@@ -143,7 +113,6 @@ function ForgotPasswordPage() {
                 message={snackbar.message}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 ContentProps={{
-                    'aria-describedby': 'message-id',
                     style: { backgroundColor: snackbar.severity === 'success' ? 'green' : 'red' },
                 }}
             />

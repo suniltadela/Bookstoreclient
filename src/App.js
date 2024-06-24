@@ -8,10 +8,13 @@ import Contact from './pages/contact/Contact';
 import PrivateRoute from './components/PrivateRoute';
 import ForgotPasswordPage from './components/Forgotpassword/Forgotpassword';
 import ResetPasswordPage from './components/Resetpassword/Resetpassword';
+import { Provider } from 'react-redux';
+import { store } from './Redux/Store/store';
 
 function App() {
     return (
         <div>
+            <Provider store={store}>
             <Router>
                 {/* Navbar outside of Routes */}
                 <Navbar />
@@ -32,6 +35,7 @@ function App() {
                     </Routes>
                 </div>
             </Router>
+            </Provider>
         </div>
     );
 }
