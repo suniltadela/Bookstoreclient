@@ -10,6 +10,7 @@ import ForgotPasswordPage from './components/Forgotpassword/Forgotpassword';
 import ResetPasswordPage from './components/Resetpassword/Resetpassword';
 import { Provider } from 'react-redux';
 import { store } from './Redux/Store/store';
+import HomePage from './pages/Homepage/Homepage';
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
+                        <Route path="/homepage" element={<HomePage />} />
                     </Routes>
                 </div>
             </Router>

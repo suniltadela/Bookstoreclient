@@ -25,9 +25,10 @@ function LoginPage() {
         navigate('/signup');
     };
 
-    const onSubmitSuccess = (accesstoken) => {
-        setUserData({ name: logindetails.email });
+    const onSubmitSuccess = (accesstoken,name,email) => {
+        setUserData({ name: name });
         Cookies.set('access_token', accesstoken, { expires: 30 });
+        Cookies.set('user_email', email, { expires: 30 });
         setLoading(false);
         seterrormsg('Login successful!');
         setTimeout(() => {
@@ -61,11 +62,12 @@ function LoginPage() {
             const response = await axios.post(
                 `${process.env.REACT_APP_BASE_URL}/login`,
                 logindetails,
-                { withCredentials: true }
+                { withCredentials: true }  
             );
             const data = response.data;
+            console.log(data,'data')
             if (response.status === 200) {
-                onSubmitSuccess(data.accessToken);
+                onSubmitSuccess(data.accessToken,data.name,logindetails.email);
             }
         } catch (error) {
             onsubmitfailure(error);

@@ -5,7 +5,27 @@ function BookList() {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    // useEffect(() => {
+    //     // Fetch user data from cookies or API
+    //     const fetchUserData = async () => {
+    //         const email = Cookies.get('user_email');
+    //         if (email) {
+    //             try {
+    //                 const response = await fetch(`/getdetails?identifier=${email}`);
+    //                 const data = await response.json();
+    //                 if (data.user) {
+    //                     setUser(data.user);
+    //                 }
+    //             } catch (error) {
+    //                 console.error('Failed to fetch user data:', error);
+    //             }
+    //         } else {
+    //             navigate('/login'); // Redirect to login if no user data
+    //         }
+    //     };
 
+    //     fetchUserData();
+    // }, [navigate]);
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);

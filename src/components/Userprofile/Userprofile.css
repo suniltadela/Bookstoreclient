@@ -1,0 +1,16 @@
+.user-profile {
+    background-color: #e0f7fa;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    text-align: center;
+    color: #004d40;
+}
+
+.user-profile h2 {
+    margin: 0 0 10px;
+}
+
+.user-profile p {
+    margin: 5px 0;
+}
